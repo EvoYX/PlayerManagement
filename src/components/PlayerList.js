@@ -28,6 +28,15 @@ const PlayerList = (props) => {
     setName("");
     const data = await PlayersDataService.getAllPlayers();
     setPlayers(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    alertify.notify(
+      "Data is updated to the latest version",
+      "success",
+      2,
+      function () {
+        props.setPopup();
+        console.log("dismissed");
+      }
+    );
   };
 
   const deleteHandler = async (id) => {
@@ -56,22 +65,18 @@ const PlayerList = (props) => {
       <Container>
         <Row className="justify-content-md-center my-auto">
           <Col xs lg="5">
-            <Form>
-              <Form.Group className="mb-3" controlId="formPlayerName">
-                <FloatingLabel
-                  controlId="floatingInput"
-                  label="Search Player Name"
-                  className="mb-3"
-                >
-                  <Form.Control
-                    type="text"
-                    placeholder="Player Name"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </FloatingLabel>
-              </Form.Group>
-            </Form>
+            <FloatingLabel
+              controlId="floatingInput"
+              label="Search Player Name"
+              className="mb-3"
+            >
+              <Form.Control
+                type="text"
+                placeholder="Player Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </FloatingLabel>
           </Col>
           <Col xs lg="1">
             <Button variant="dark" size="lg" onClick={() => searchPlayer()}>

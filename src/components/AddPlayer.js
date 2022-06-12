@@ -44,21 +44,37 @@ const AddPlayer = (props) => {
       bootSize,
     };
 
-    await PlayerDataService.addPlayer(newPlayer);
     try {
-      alertify.notify(
-        "Player" + name + " has been added successfully",
-        "success",
-        2,
-        function () {
-          props.setPopup();
-          console.log("dismissed");
-        }
-      );
+      if (props.id !== undefined && props.id !== "") {
+        await PlayerDataService.updatePlayer(props.id, newPlayer);
+        props.setPlayerId("");
+        alertify.notify(
+          "Player" + name + " details updated successfully",
+          "success",
+          2,
+          function () {
+            props.setPopup(false);
+
+            console.log("dismissed");
+          }
+        );
+      } else {
+        await PlayerDataService.addPlayer(newPlayer);
+        props.setPopup(false);
+
+        alertify.notify(
+          "Player" + name + " has been added successfully",
+          "success",
+          2,
+          function () {
+            props.setPopup();
+            console.log("dismissed");
+          }
+        );
+      }
     } catch (err) {
       setMessage({ error: true, msg: err.message });
     }
-
     setName("");
     setContactNo(0);
     setAge(0);
@@ -101,24 +117,15 @@ const AddPlayer = (props) => {
   return (
     <>
       <div className="p-4 box">
-        {message?.msg && (
-          <Alert
-            variant={message?.error ? "danger" : "success"}
-            dismissible
-            onClose={() => setMessage("")}
-          >
-            {message?.msg}
-          </Alert>
-        )}
-        <div>Adding Players</div>
         <form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="formPlayerName">
+          <Form.Group className="mb-1" controlId="formPlayerName">
             <FloatingLabel
               controlId="floatingInput"
               label="Name"
-              className="mb-3"
+              className="mb-2"
             >
               <Form.Control
+                className="form-control form-control-sm"
                 type="text"
                 placeholder="Player Name"
                 value={name}
@@ -129,7 +136,7 @@ const AddPlayer = (props) => {
             <FloatingLabel
               controlId="floatingInput"
               label="ContactNo"
-              className="mb-3"
+              className="mb-2"
             >
               <Form.Control
                 type="number"
@@ -141,7 +148,7 @@ const AddPlayer = (props) => {
             <FloatingLabel
               controlId="floatingInput"
               label="Date-Of-Birth"
-              className="mb-3"
+              className="mb-2"
             >
               <Form.Control
                 type="date"
@@ -154,7 +161,7 @@ const AddPlayer = (props) => {
             <FloatingLabel
               controlId="floatingInput"
               label="Age"
-              className="mb-3"
+              className="mb-2"
             >
               <Form.Control
                 type="number"
@@ -166,7 +173,7 @@ const AddPlayer = (props) => {
             <FloatingLabel
               controlId="floatingInput"
               label="Address"
-              className="mb-3"
+              className="mb-2"
             >
               <Form.Control
                 type="text"
@@ -179,7 +186,7 @@ const AddPlayer = (props) => {
             <FloatingLabel
               controlId="floatingInput"
               label="Team Name"
-              className="mb-3"
+              className="mb-2"
             >
               <Form.Control
                 type="text"
@@ -189,7 +196,11 @@ const AddPlayer = (props) => {
               />
             </FloatingLabel>
 
-            <FloatingLabel controlId="floatingSelect" label="Jersey Size">
+            <FloatingLabel
+              className="mb-2"
+              controlId="floatingSelect"
+              label="Jersey Size"
+            >
               <Form.Select
                 aria-label="jersey selection"
                 value={jerseySize}
@@ -202,7 +213,11 @@ const AddPlayer = (props) => {
               </Form.Select>
             </FloatingLabel>
 
-            <FloatingLabel controlId="floatingSelect" label="Shorts Size">
+            <FloatingLabel
+              className="mb-2"
+              controlId="floatingSelect"
+              label="Shorts Size"
+            >
               <Form.Select
                 aria-label="short selection"
                 value={shortSize}
@@ -215,7 +230,11 @@ const AddPlayer = (props) => {
               </Form.Select>
             </FloatingLabel>
 
-            <FloatingLabel controlId="floatingSelect" label="Boots Size">
+            <FloatingLabel
+              controlId="floatingSelect"
+              label="Boots Size"
+              className="mb-2"
+            >
               <Form.Select
                 aria-label="boots selection"
                 value={bootSize}
@@ -228,8 +247,9 @@ const AddPlayer = (props) => {
               </Form.Select>
             </FloatingLabel>
           </Form.Group>
-
-          <input type="submit" value="Submit" />
+          <Button type="submit" value="Submit" variant="outline-info">
+            {props.id !== undefined && props.id !== "" ? "Update" : "Add"}
+          </Button>
         </form>
       </div>
     </>
